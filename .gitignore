@@ -53,3 +53,8 @@ dkms.conf
 
 # debug information files
 *.dwo
+
+#Cosas del IDE
+.vscode/
+.metadata/
+StarTracker/.settings/
