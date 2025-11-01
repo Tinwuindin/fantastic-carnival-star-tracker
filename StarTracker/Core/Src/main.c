@@ -31,7 +31,12 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include <stdint.h>
+#include <string.h>
+#include "stm32f429i_discovery.h"
+#include "stm32f429i_discovery_lcd.h"
+#include "stm32f429i_discovery_sdram.h"
+#include "lvgl.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -53,6 +58,8 @@
 
 /* USER CODE BEGIN PV */
 
+static uint8_t buf1[320 * (240 /10) * 2];
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -64,6 +71,24 @@ void MX_FREERTOS_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+
+void my_flush_cb(lv_display_t * disp, const lv_area_t * area, uint8_t * px_buf) {
+    /* Show the rendered image on the display */
+	uint16_t* buf16 = (uint16_t*)px_buf;
+	int x,y;
+    for(y = area->y1; y <= area->y2; y++){
+      for(x = area->x1; x <= area->x2; x++){
+        BSP_LCD_DrawPixel(x, y, *buf16);
+        buf16++;
+      }
+    }
+
+    /* Indicate that the buffer is available.
+     * If DMA were used, call in the DMA complete interrupt. */
+
+    lv_display_flush_ready(disp);
+}
+
 
 /* USER CODE END 0 */
 
@@ -104,7 +129,27 @@ int main(void)
   MX_SPI5_Init();
   MX_TIM1_Init();
   MX_USART1_UART_Init();
+  MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
+  BSP_SDRAM_Init();
+	BSP_LCD_Init();
+	BSP_LCD_LayerDefaultInit(LCD_BACKGROUND_LAYER,LCD_FRAME_BUFFER);
+	BSP_LCD_LayerDefaultInit(LCD_FOREGROUND_LAYER,LCD_FRAME_BUFFER);
+	BSP_LCD_SelectLayer(LCD_FOREGROUND_LAYER);
+	BSP_LCD_DisplayOn();
+	BSP_LCD_Clear(0xffffff);
+	BSP_TS_Init(240,320);
+
+	lv_init();
+	lv_tick_set_cb(HAL_GetTick());
+
+	lv_display_t * disp1 = lv_display_create(240, 320);
+	lv_display_set_buffers(disp1, buf1, NULL, sizeof(buf1), LV_DISPLAY_RENDER_MODE_PARTIAL);
+	lv_display_set_flush_cb(disp1, my_flush_cb);
+
+
+
+
 
   /* USER CODE END 2 */
 
@@ -213,8 +258,7 @@ void Error_Handler(void)
 	}
   /* USER CODE END Error_Handler_Debug */
 }
-
-#ifdef  USE_FULL_ASSERT
+#ifdef USE_FULL_ASSERT
 /**
   * @brief  Reports the name of the source file and the source line number
   *         where the assert_param error has occurred.
