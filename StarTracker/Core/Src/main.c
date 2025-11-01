@@ -46,7 +46,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+#define LCD_FRAME_BUFFER ((uint32_t)0xD0000000)
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -57,8 +57,6 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
-static uint8_t buf1[320 * (240 /10) * 2];
 
 /* USER CODE END PV */
 
@@ -74,14 +72,6 @@ void MX_FREERTOS_Init(void);
 
 void my_flush_cb(lv_display_t * disp, const lv_area_t * area, uint8_t * px_buf) {
     /* Show the rendered image on the display */
-	uint16_t* buf16 = (uint16_t*)px_buf;
-	int x,y;
-    for(y = area->y1; y <= area->y2; y++){
-      for(x = area->x1; x <= area->x2; x++){
-        BSP_LCD_DrawPixel(x, y, *buf16);
-        buf16++;
-      }
-    }
 
     /* Indicate that the buffer is available.
      * If DMA were used, call in the DMA complete interrupt. */
@@ -132,6 +122,7 @@ int main(void)
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
   BSP_SDRAM_Init();
+
 	BSP_LCD_Init();
 	BSP_LCD_LayerDefaultInit(LCD_BACKGROUND_LAYER,LCD_FRAME_BUFFER);
 	BSP_LCD_LayerDefaultInit(LCD_FOREGROUND_LAYER,LCD_FRAME_BUFFER);
@@ -140,11 +131,14 @@ int main(void)
 	BSP_LCD_Clear(0xffffff);
 	BSP_TS_Init(240,320);
 
+	BSP_LCD_DrawCircle(10, 10, 10);
 	lv_init();
-	lv_tick_set_cb(HAL_GetTick());
-
+	lv_tick_set_cb(HAL_GetTick);
 	lv_display_t * disp1 = lv_display_create(240, 320);
-	lv_display_set_buffers(disp1, buf1, NULL, sizeof(buf1), LV_DISPLAY_RENDER_MODE_PARTIAL);
+	lv_display_set_buffers(disp1,
+	                       (void *)LCD_FRAME_BUFFER, NULL,
+	                       240 * 320 * 4,
+	                       LV_DISPLAY_RENDER_MODE_FULL);
 	lv_display_set_flush_cb(disp1, my_flush_cb);
 
 
@@ -154,18 +148,22 @@ int main(void)
   /* USER CODE END 2 */
 
   /* Call init function for freertos objects (in cmsis_os2.c) */
-  MX_FREERTOS_Init();
+  //MX_FREERTOS_Init();
 
   /* Start scheduler */
-  osKernelStart();
+  //osKernelStart();
 
   /* We should never get here as control is now taken by the scheduler */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+	lv_obj_t *label = lv_label_create(lv_scr_act());
+	    lv_label_set_text(label, "¡Hola LVGL!");
+	    lv_obj_center(label);
 	while (1)
 	{
-		// Test
+		uint32_t time = lv_timer_handler();
+		HAL_Delay(time);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

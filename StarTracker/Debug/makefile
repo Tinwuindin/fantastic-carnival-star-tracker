@@ -321,8 +321,8 @@ all: main-build
 main-build: StarTracker.elf secondary-outputs
 
 # Tool invocations
-StarTracker.elf StarTracker.map: $(OBJS) $(USER_OBJS) E:\GitHub\fantastic-carnival-star-tracker\StarTracker\STM32F429ZITX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "StarTracker.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"E:\GitHub\fantastic-carnival-star-tracker\StarTracker\STM32F429ZITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="StarTracker.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+StarTracker.elf StarTracker.map: $(OBJS) $(USER_OBJS) F:\Proyectos\ Git\fantastic-carnival-star-tracker\StarTracker\STM32F429ZITX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "StarTracker.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"F:\Proyectos Git\fantastic-carnival-star-tracker\StarTracker\STM32F429ZITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="StarTracker.map" -Wl,--gc-sections -static -Wl,--no-warn-execstack --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
