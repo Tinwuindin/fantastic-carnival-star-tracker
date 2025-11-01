@@ -135,10 +135,7 @@ int main(void)
 	lv_init();
 	lv_tick_set_cb(HAL_GetTick);
 	lv_display_t * disp1 = lv_display_create(240, 320);
-	lv_display_set_buffers(disp1,
-	                       (void *)LCD_FRAME_BUFFER, NULL,
-	                       240 * 320 * 4,
-	                       LV_DISPLAY_RENDER_MODE_FULL);
+	lv_display_set_buffers(disp1, (void *)LCD_FRAME_BUFFER, NULL,240 * 320 * 4,LV_DISPLAY_RENDER_MODE_FULL);
 	lv_display_set_flush_cb(disp1, my_flush_cb);
 
 

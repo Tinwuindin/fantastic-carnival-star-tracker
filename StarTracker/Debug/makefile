@@ -273,6 +273,7 @@ RM := rm -rf
 -include Drivers/BSP/subdir.mk
 -include Core/Startup/subdir.mk
 -include Core/Src/subdir.mk
+-include Core/LVGL/subdir.mk
 -include objects.mk
 
 ifneq ($(MAKECMDGOALS),clean)

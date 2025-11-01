@@ -37,17 +37,17 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  16 .debug_rnglists 00006bea  00000000  00000000  00186da8  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_macro  0005a31c  00000000  00000000  0018d992  2**0
+ 17 .debug_macro  00056ad3  00000000  00000000  0018d992  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_line   001756d1  00000000  00000000  001e7cae  2**0
+ 18 .debug_line   00175753  00000000  00000000  001e4465  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .debug_str    001222d1  00000000  00000000  0035d37f  2**0
+ 19 .debug_str    001222d1  00000000  00000000  00359bb8  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 20 .comment      00000043  00000000  00000000  0047f650  2**0
+ 20 .comment      00000043  00000000  00000000  0047be89  2**0
                   CONTENTS, READONLY
- 21 .debug_frame  00022fb4  00000000  00000000  0047f694  2**2
+ 21 .debug_frame  00022fb4  00000000  00000000  0047becc  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 22 .debug_line_str 0000006b  00000000  00000000  004a2648  2**0
+ 22 .debug_line_str 0000006b  00000000  00000000  0049ee80  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -2320,7 +2320,7 @@ int main(void)
  80010f2:	20f0      	movs	r0, #240	@ 0xf0
  80010f4:	f014 fe56 	bl	8015da4 <lv_display_create>
  80010f8:	60f8      	str	r0, [r7, #12]
-	lv_display_set_buffers(disp1,
+	lv_display_set_buffers(disp1, (void *)LCD_FRAME_BUFFER, NULL,240 * 320 * 4,LV_DISPLAY_RENDER_MODE_FULL);
  80010fa:	2302      	movs	r3, #2
  80010fc:	9300      	str	r3, [sp, #0]
  80010fe:	f44f 2396 	mov.w	r3, #307200	@ 0x4b000
@@ -2328,9 +2328,6 @@ int main(void)
  8001104:	f04f 4150 	mov.w	r1, #3489660928	@ 0xd0000000
  8001108:	68f8      	ldr	r0, [r7, #12]
  800110a:	f015 f87f 	bl	801620c <lv_display_set_buffers>
-	                       (void *)LCD_FRAME_BUFFER, NULL,
-	                       240 * 320 * 4,
-	                       LV_DISPLAY_RENDER_MODE_FULL);
 	lv_display_set_flush_cb(disp1, my_flush_cb);
  800110e:	490e      	ldr	r1, [pc, #56]	@ (8001148 <main+0xdc>)
  8001110:	68f8      	ldr	r0, [r7, #12]

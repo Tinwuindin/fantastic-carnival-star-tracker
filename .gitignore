@@ -58,3 +58,4 @@ dkms.conf
 .vscode/
 .metadata/
 StarTracker/.settings/
+StarTracker/Debug/
