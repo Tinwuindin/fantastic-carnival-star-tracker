@@ -221,6 +221,8 @@ void BSP_TS_GetState(TS_StateTypeDef *TsState)
 
     /* Update the Y position */
     TsState->Y = _y;
+
+    
   }
 }
 

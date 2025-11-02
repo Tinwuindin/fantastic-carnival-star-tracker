@@ -31,12 +31,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include <stdint.h>
-#include <string.h>
-#include "stm32f429i_discovery.h"
-#include "stm32f429i_discovery_lcd.h"
-#include "stm32f429i_discovery_sdram.h"
-#include "lvgl.h"
+#include "lvgl_port.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -69,16 +64,6 @@ void MX_FREERTOS_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
-void my_flush_cb(lv_display_t * disp, const lv_area_t * area, uint8_t * px_buf) {
-    /* Show the rendered image on the display */
-
-    /* Indicate that the buffer is available.
-     * If DMA were used, call in the DMA complete interrupt. */
-
-    lv_display_flush_ready(disp);
-}
-
 
 /* USER CODE END 0 */
 
@@ -121,50 +106,25 @@ int main(void)
   MX_USART1_UART_Init();
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
-  BSP_SDRAM_Init();
-
-	BSP_LCD_Init();
-	BSP_LCD_LayerDefaultInit(LCD_BACKGROUND_LAYER,LCD_FRAME_BUFFER);
-	BSP_LCD_LayerDefaultInit(LCD_FOREGROUND_LAYER,LCD_FRAME_BUFFER);
-	BSP_LCD_SelectLayer(LCD_FOREGROUND_LAYER);
-	BSP_LCD_DisplayOn();
-	BSP_LCD_Clear(0xffffff);
-	BSP_TS_Init(240,320);
-
-	BSP_LCD_DrawCircle(10, 10, 10);
-	lv_init();
-	lv_tick_set_cb(HAL_GetTick);
-	lv_display_t * disp1 = lv_display_create(240, 320);
-	lv_display_set_buffers(disp1, (void *)LCD_FRAME_BUFFER, NULL,240 * 320 * 4,LV_DISPLAY_RENDER_MODE_FULL);
-	lv_display_set_flush_cb(disp1, my_flush_cb);
-
-
-
-
-
+	LVGL_LL_Init();
   /* USER CODE END 2 */
 
   /* Call init function for freertos objects (in cmsis_os2.c) */
-  //MX_FREERTOS_Init();
+  MX_FREERTOS_Init();
 
   /* Start scheduler */
-  //osKernelStart();
+  osKernelStart();
 
   /* We should never get here as control is now taken by the scheduler */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-	lv_obj_t *label = lv_label_create(lv_scr_act());
-	    lv_label_set_text(label, "¡Hola LVGL!");
-	    lv_obj_center(label);
-	while (1)
-	{
-		uint32_t time = lv_timer_handler();
-		HAL_Delay(time);
+  while (1)
+  {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	}
+  }
   /* USER CODE END 3 */
 }
 
@@ -246,11 +206,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
-	/* User can add his own implementation to report the HAL error return state */
-	__disable_irq();
-	while (1)
-	{
-	}
+  /* User can add his own implementation to report the HAL error return state */
+  __disable_irq();
+  while (1)
+  {
+  }
   /* USER CODE END Error_Handler_Debug */
 }
 #ifdef USE_FULL_ASSERT
@@ -264,8 +224,8 @@ void Error_Handler(void)
 void assert_failed(uint8_t *file, uint32_t line)
 {
   /* USER CODE BEGIN 6 */
-	/* User can add his own implementation to report the file name and line number,
-	   ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+  /* User can add his own implementation to report the file name and line number,
+     ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
