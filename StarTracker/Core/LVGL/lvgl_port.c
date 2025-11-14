@@ -9,6 +9,8 @@
 SemaphoreHandle_t lvgl_mux;
 static TS_StateTypeDef ts;
 
+extern volatile bool ltdc_vsync;
+
 void LVGL_Flush(lv_display_t* disp, const lv_area_t* area, uint8_t* px_buf);
 
 void LVGL_Indev_Read(lv_indev_t* drv, lv_indev_data_t* data) {
@@ -32,19 +34,6 @@ void LVGL_Indev_Read(lv_indev_t* drv, lv_indev_data_t* data) {
 void LVGL_Timer(void* args) {
 	lvgl_mux = xSemaphoreCreateRecursiveMutex();
 	assert(lvgl_mux);
-	lv_obj_t* label = lv_label_create(lv_scr_act());
-	lv_label_set_text(label, "¡Hola LVGL!");
-	lv_obj_center(label);
-
-	// Crear botón
-	lv_obj_t* btn = lv_button_create(lv_scr_act());
-	lv_obj_set_size(btn, 120, 50);
-	lv_obj_align(btn, LV_ALIGN_BOTTOM_MID, 0, -20);
-
-	// Crear etiqueta dentro del botón
-	lv_obj_t* btn_label = lv_label_create(btn);
-	lv_label_set_text(btn_label, "Presióname");
-	lv_obj_center(btn_label);
 
 	while (1) {
 		while (xSemaphoreTakeRecursive(lvgl_mux, pdMS_TO_TICKS(10)) != pdTRUE) {
@@ -61,6 +50,10 @@ void LVGL_Timer(void* args) {
  * @brief Callback de fin de transmision de datos de lvgl
 */
 void LVGL_Flush(lv_display_t* disp, const lv_area_t* area, uint8_t* px_buf) {
+	ltdc_vsync = false;
+	while (!ltdc_vsync) {
+		__NOP();
+	}
 	lv_display_flush_ready(disp);
 }
 

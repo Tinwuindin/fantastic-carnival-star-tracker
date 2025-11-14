@@ -52,7 +52,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+volatile bool ltdc_vsync = false;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -64,7 +64,12 @@ void MX_FREERTOS_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+void HAL_LTDC_LineEventCallback(LTDC_HandleTypeDef *hltdc) {
+    ltdc_vsync = true;
 
+    // Reprogramar la siguiente interrupción para la próxima VSYNC
+    HAL_LTDC_ProgramLineEvent(hltdc, 0);
+}
 /* USER CODE END 0 */
 
 /**
@@ -108,6 +113,8 @@ int main(void)
   /* USER CODE BEGIN 2 */
   HAL_TIM_Base_Start_IT(&htim2);
 	LVGL_LL_Init();
+	__HAL_LTDC_ENABLE_IT(&hltdc, LTDC_IT_LI);
+	HAL_LTDC_ProgramLineEvent(&hltdc, 0);
   /* USER CODE END 2 */
 
   /* Call init function for freertos objects (in cmsis_os2.c) */

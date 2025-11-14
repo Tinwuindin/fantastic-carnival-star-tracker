@@ -26,6 +26,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "lvgl_port.h"
+#include "Menus.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -167,7 +168,8 @@ void MX_FREERTOS_Init(void) {
 void StartDefaultTask(void const * argument)
 {
   /* USER CODE BEGIN StartDefaultTask */
-	xTaskCreate(LVGL_Timer, "LVGL_Timer", 1024, NULL, 2, NULL);
+	xTaskCreate(LVGL_Timer, "LVGL_Timer", 1024, NULL, 3, NULL);
+	xTaskCreate(Navegacion, "Navegacion", 1024, NULL, 1, NULL);
   /* Infinite loop */
   for(;;)
   {

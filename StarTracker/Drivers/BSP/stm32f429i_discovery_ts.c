@@ -21,6 +21,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f429i_discovery_ts.h"
 #include "stm32f429i_discovery_io.h"
+#define USE_STM32F429I_DISCOVERY_REVD
 
 /** @addtogroup BSP
   * @{
